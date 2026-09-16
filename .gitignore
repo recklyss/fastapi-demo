@@ -1,0 +1,38 @@
+# Environments and secrets
+.venv/
+fastapienv/
+.env
+.env.*
+!.env.example
+
+# Python caches and build output
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.tox/
+.nox/
+build/
+dist/
+*.egg-info/
+
+# Tests and coverage
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Documentation build output
+site/
+docs/superpowers/
+
+# Local IDE and agent settings
+.idea/
+.claude/
+.vscode/settings.json
+
+# Operating system files
+.DS_Store
