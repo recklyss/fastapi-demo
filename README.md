@@ -37,7 +37,7 @@ with JWT authentication, refresh-token rotation, and per-user data isolation.
 ├── app/
 │   ├── main.py          # FastAPI app factory, lifespan, /health
 │   ├── config.py        # settings (pydantic-settings) + Snowflake URL
-│   ├── db.py            # engine/session factory and UnitOfWork
+│   ├── db.py            # engine/session factory + get_db dependency
 │   ├── models.py        # SQLAlchemy models: User, Todo, RefreshToken
 │   ├── schemas.py       # Pydantic request/response schemas
 │   ├── auth.py          # password hashing, JWT, auth dependencies
@@ -190,7 +190,7 @@ uv run pytest          # run the full suite
 uv run pytest -v       # verbose output
 ```
 
-The tests use FastAPI's `TestClient` and a `UnitOfWork`-backed app. Tests that need a
+The tests use FastAPI's `TestClient` and a session-factory-backed app. Tests that need a
 real Snowflake database are **skipped automatically** unless the `SNOWFLAKE_*`
 environment variables are set (see `.env.example`); when they are, the suite runs
 against Snowflake and truncates tables between tests.

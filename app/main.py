@@ -1,7 +1,9 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI
+from fastapi import HTTPException
+from fastapi import Request
 from sqlalchemy import text
 
 from app.config import get_settings
@@ -31,7 +33,8 @@ def create_app() -> FastAPI:
             ) from None
         return {"status": "ok"}
 
-    from app.routers import auth, todos
+    from app.routers import auth
+    from app.routers import todos
 
     app.include_router(auth.router)
     app.include_router(todos.router)

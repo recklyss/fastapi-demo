@@ -12,10 +12,10 @@ from fastapi import status
 from fastapi.security import OAuth2PasswordBearer
 from pwdlib import PasswordHash
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from app.config import get_settings
-from app.db import UnitOfWork
-from app.db import get_uow
+from app.db import get_db
 from app.models import RefreshToken
 from app.models import User
 
@@ -77,11 +77,11 @@ def decode_token(token: str) -> dict:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token") from exc
 
 
-def issue_token_pair(uow: UnitOfWork, user: User) -> dict[str, str]:
+def issue_token_pair(db: Session, user: User) -> dict[str, str]:
     settings = get_settings()
     access = create_access_token(user.id)
     refresh, jti = create_refresh_token(user.id)
-    uow.session.add(
+    db.add(
         RefreshToken(
             user_id=user.id,
             jti=jti,
@@ -96,11 +96,11 @@ def issue_token_pair(uow: UnitOfWork, user: User) -> dict[str, str]:
     }
 
 
-def get_refresh_row(uow: UnitOfWork, token: str) -> RefreshToken:
+def get_refresh_row(db: Session, token: str) -> RefreshToken:
     payload = decode_token(token)
     if payload.get("type") != "refresh":
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    result = uow.session.execute(select(RefreshToken).where(RefreshToken.jti == payload.get("jti")))
+    result = db.execute(select(RefreshToken).where(RefreshToken.jti == payload.get("jti")))
     row = result.scalar_one_or_none()
     now = datetime.now(UTC)
     if row is None or row.revoked_at is not None or row.expires_at < now or row.token_hash != hash_refresh_token(token):
@@ -110,7 +110,7 @@ def get_refresh_row(uow: UnitOfWork, token: str) -> RefreshToken:
 
 def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
-    uow: Annotated[UnitOfWork, Depends(get_uow)],
+    db: Annotated[Session, Depends(get_db)],
 ) -> User:
     payload = decode_token(token)
     if payload.get("type") != "access":
@@ -119,7 +119,7 @@ def get_current_user(
         user_id = str(uuid.UUID(payload["sub"]))
     except (KeyError, ValueError) as exc:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token") from exc
-    result = uow.session.execute(select(User).where(User.id == user_id))
+    result = db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")

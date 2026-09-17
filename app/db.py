@@ -9,20 +9,6 @@ from sqlalchemy.orm import sessionmaker
 from app.config import Settings
 
 
-class UnitOfWork:
-    def __init__(self, session_factory: sessionmaker[Session]) -> None:
-        self.session = session_factory()
-
-    def commit(self) -> None:
-        self.session.commit()
-
-    def rollback(self) -> None:
-        self.session.rollback()
-
-    def close(self) -> None:
-        self.session.close()
-
-
 def create_engine_and_factory(
     settings: Settings,
 ) -> tuple[Engine, sessionmaker[Session]]:
@@ -31,10 +17,10 @@ def create_engine_and_factory(
     return engine, session_factory
 
 
-def get_uow(request: Request) -> Generator[UnitOfWork]:
-    uow = UnitOfWork(request.app.state.session_factory)
+def get_db(request: Request) -> Generator[Session]:
+    session = request.app.state.session_factory()
     try:
-        yield uow
+        yield session
     finally:
-        uow.rollback()
-        uow.close()
+        session.rollback()
+        session.close()
