@@ -35,9 +35,11 @@ def create_app() -> FastAPI:
 
     from app.routers import auth
     from app.routers import todos
+    from app.routers import user
 
     app.include_router(auth.router)
     app.include_router(todos.router)
+    app.include_router(user.router)
     return app
 
 

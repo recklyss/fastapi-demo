@@ -45,9 +45,7 @@ def test_refresh_rotates_and_rejects_old(client):
     _register(client, "alice")
     first = _login(client, "alice").json()
 
-    rotated = client.post(
-        "/auth/refresh", json={"refresh_token": first["refresh_token"]}
-    )
+    rotated = client.post("/auth/refresh", json={"refresh_token": first["refresh_token"]})
     assert rotated.status_code == 200
     new_tokens = rotated.json()
     assert new_tokens["access_token"] != first["access_token"]
@@ -61,7 +59,7 @@ def test_refresh_token_rejected_as_access(client):
     _register(client, "alice")
     tokens = _login(client, "alice").json()
     response = client.get(
-        "/auth/me",
+        "/user/me",
         headers={"Authorization": f"Bearer {tokens['refresh_token']}"},
     )
     assert response.status_code == 401

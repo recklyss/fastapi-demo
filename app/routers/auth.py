@@ -10,7 +10,6 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.auth import get_current_user
 from app.auth import get_refresh_row
 from app.auth import hash_password
 from app.auth import issue_token_pair
@@ -76,8 +75,3 @@ def logout(body: RefreshRequest, db: Annotated[Session, Depends(get_db)]) -> Non
     row = get_refresh_row(db, body.refresh_token)
     row.revoked_at = datetime.now(timezone.utc)
     db.commit()
-
-
-@router.get("/me", response_model=UserPublic)
-def me(user: Annotated[User, Depends(get_current_user)]) -> User:
-    return user

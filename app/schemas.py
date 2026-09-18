@@ -1,10 +1,12 @@
 from datetime import datetime
+from typing import Self
 from uuid import UUID
 
 from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import Field
 from pydantic import field_validator
+from pydantic import model_validator
 
 
 class UserCreate(BaseModel):
@@ -18,6 +20,17 @@ class UserPublic(BaseModel):
     id: UUID
     username: str
     created_at: datetime
+
+
+class ResetPasswordRequest(BaseModel):
+    new_password: str = Field(min_length=10)
+    confirm_password: str = Field(min_length=10)
+
+    @model_validator(mode="after")
+    def passwords_must_match(self) -> Self:
+        if self.new_password != self.confirm_password:
+            raise ValueError("Passwords do not match")
+        return self
 
 
 class TokenPair(BaseModel):
