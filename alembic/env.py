@@ -1,7 +1,8 @@
 from logging.config import fileConfig
 
 from alembic.ddl.impl import DefaultImpl
-from sqlalchemy import create_engine, pool
+from sqlalchemy import create_engine
+from sqlalchemy import pool
 
 from alembic import context
 from app.config import get_settings
@@ -24,7 +25,7 @@ target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
-    url = get_settings().sqlalchemy_url().render_as_string(hide_password=False)
+    url = get_settings().sqlalchemy_url()
     context.configure(
         url=url,
         target_metadata=target_metadata,

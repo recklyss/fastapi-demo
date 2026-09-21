@@ -19,6 +19,7 @@ class UserPublic(BaseModel):
 
     id: UUID
     username: str
+    phone_number: str | None
     created_at: datetime
 
 

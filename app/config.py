@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     snowflake_warehouse: str
     snowflake_role: str = ""
     secret_key: str
-    access_token_ttl_seconds: int = 900
+    access_token_ttl_seconds: int = 90  # was 900
     refresh_token_ttl_seconds: int = 604800
 
     def sqlalchemy_url(self) -> str:
