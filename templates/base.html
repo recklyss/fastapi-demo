@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}{{ title }} · TodoDesk{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Distressed&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/css/app.css" />
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <div class="shell">
+      <header class="top">
+        <a class="brand" href="/login">TodoDesk</a>
+        {% block header_actions %}{% endblock %}
+      </header>
+      <main class="main">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+    <script src="/static/js/api.js"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

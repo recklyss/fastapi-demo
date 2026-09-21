@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="auth-panel">
+  <h1 class="display">TodoDesk</h1>
+  <p class="lede">Create an account to start tracking todos.</p>
+  <form id="register-form" class="stack" novalidate>
+    <label>
+      Username
+      <input name="username" autocomplete="username" required minlength="3" maxlength="50" />
+    </label>
+    <label>
+      Password
+      <input name="password" type="password" autocomplete="new-password" required minlength="1" />
+    </label>
+    <p id="auth-error" class="error" hidden></p>
+    <button type="submit" class="btn primary">Create account</button>
+  </form>
+  <p class="muted">
+    Already registered?
+    <a href="/login">Sign in</a>
+  </p>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/auth.js"></script>
+<script>
+  TodoAuth.initRegister();
+</script>
+{% endblock %}

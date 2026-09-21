@@ -10,7 +10,8 @@ dependencies = [
     "alembic",
     "pydantic-settings",
     "pwdlib[argon2]",
-    "pyjwt"
+    "pyjwt",
+    "jinja2>=3.1.6",
 ]
 
 [dependency-groups]

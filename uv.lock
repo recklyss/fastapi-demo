@@ -1435,6 +1435,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "alembic" },
     { name = "fastapi", extra = ["standard"] },
+    { name = "jinja2" },
     { name = "pwdlib", extra = ["argon2"] },
     { name = "pydantic-settings" },
     { name = "pyjwt" },
@@ -1453,6 +1454,7 @@ dev = [
 requires-dist = [
     { name = "alembic" },
     { name = "fastapi", extras = ["standard"] },
+    { name = "jinja2", specifier = ">=3.1.6" },
     { name = "pwdlib", extras = ["argon2"] },
     { name = "pydantic-settings" },
     { name = "pyjwt" },

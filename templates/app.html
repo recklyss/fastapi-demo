@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block header_actions %}
+<div class="top-actions">
+  <span id="user-label" class="muted"></span>
+  <button type="button" id="logout-btn" class="btn ghost">Log out</button>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="app-panel">
+  <h1 class="display">TodoDesk</h1>
+  <p class="lede">Capture what matters. Finish it.</p>
+
+  <form id="todo-form" class="todo-compose" novalidate>
+    <input
+      id="todo-title"
+      name="title"
+      placeholder="Add a todo…"
+      maxlength="255"
+      required
+      autocomplete="off"
+    />
+    <button type="submit" class="btn primary">Add</button>
+  </form>
+  <p id="todo-error" class="error" hidden></p>
+
+  <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
+  <p id="todo-empty" class="muted empty" hidden>No todos yet. Add one above.</p>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/todos.js"></script>
+<script>
+  TodoApp.init();
+</script>
+{% endblock %}

@@ -1,0 +1,243 @@
+:root {
+  --ink: #12252b;
+  --muted: #5a6d73;
+  --paper: #f3f6f5;
+  --panel: rgba(255, 255, 255, 0.78);
+  --line: rgba(18, 37, 43, 0.12);
+  --teal: #0f6e6a;
+  --teal-deep: #0a4f4c;
+  --danger: #a33b2d;
+  --shadow: 0 18px 50px rgba(18, 37, 43, 0.12);
+  --radius: 18px;
+  --font-display: "Rubik Distressed", Impact, sans-serif;
+  --font-body: "Segoe UI", system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  color: var(--ink);
+  font-family: var(--font-body);
+  background: var(--paper);
+  line-height: 1.5;
+}
+
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(15, 110, 106, 0.22), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(34, 84, 120, 0.16), transparent 50%),
+    linear-gradient(160deg, #eef4f2 0%, #f7f8f6 45%, #e8eef1 100%);
+}
+
+.shell {
+  width: min(720px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1.5rem 0 3rem;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.main {
+  animation: rise 480ms ease-out both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-panel,
+.app-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  padding: 1.75rem;
+}
+
+.display {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.lede {
+  margin: 0 0 1.5rem;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.stack {
+  display: grid;
+  gap: 1rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.75rem 0.9rem;
+  font: inherit;
+  color: var(--ink);
+  background: #fff;
+}
+
+input:focus {
+  outline: 2px solid rgba(15, 110, 106, 0.35);
+  border-color: var(--teal);
+}
+
+.btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.7rem 1.15rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn.primary {
+  background: var(--teal);
+  color: #fff;
+}
+
+.btn.primary:hover {
+  background: var(--teal-deep);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+
+.btn.ghost:hover {
+  color: var(--ink);
+}
+
+.btn.tiny {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.muted a,
+a {
+  color: var(--teal-deep);
+}
+
+.error {
+  margin: 0;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.todo-compose {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+}
+
+.todo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.todo-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  animation: rise 320ms ease-out both;
+}
+
+.todo-item.done .todo-title {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.todo-title {
+  word-break: break-word;
+}
+
+.empty {
+  margin-top: 1rem;
+}
+
+@media (max-width: 560px) {
+  .todo-compose {
+    grid-template-columns: 1fr;
+  }
+
+  .top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
