@@ -1,11 +1,12 @@
 # Todo API
 
+Deployed via Render: https://todo-demo-qnea.onrender.com/app
+
 ![Python](https://img.shields.io/badge/python-3.13+-blue)
 ![FastAPI](https://img.shields.io/badge/fastapi-latest-009688)
 ![Snowflake](https://img.shields.io/badge/snowflake-supported-29B5E8)
 
-A demo project for learning Python and building a production-shaped API with
-**FastAPI + SQLAlchemy + Snowflake**. It implements a small todo list backend
+A demo project for learning Python and building a production-shaped API with **FastAPI + SQLAlchemy + Snowflake**. It implements a small todo list backend
 with JWT authentication, refresh-token rotation, and per-user data isolation.
 
 ## Features
@@ -19,16 +20,16 @@ with JWT authentication, refresh-token rotation, and per-user data isolation.
 
 ## Tech stack
 
-| Layer | Tool |
-| --- | --- |
-| Web framework | [FastAPI](https://fastapi.tiangolo.com/) |
-| ORM | [SQLAlchemy 2.0](https://www.sqlalchemy.org/) |
-| Database | [Snowflake](https://www.snowflake.com/) (via `snowflake-sqlalchemy`) |
-| Migrations | [Alembic](https://alembic.sqlalchemy.org/) |
-| Validation / settings | [Pydantic v2](https://docs.pydantic.dev/) + `pydantic-settings` |
-| Passwords | [pwdlib](https://github.com/frankie567/pwdlib) (Argon2) |
-| Tokens | [PyJWT](https://pyjwt.readthedocs.io/) |
-| Package manager | [uv](https://docs.astral.sh/uv/) |
+| Layer                 | Tool                                                                 |
+|-----------------------|----------------------------------------------------------------------|
+| Web framework         | [FastAPI](https://fastapi.tiangolo.com/)                             |
+| ORM                   | [SQLAlchemy 2.0](https://www.sqlalchemy.org/)                        |
+| Database              | [Snowflake](https://www.snowflake.com/) (via `snowflake-sqlalchemy`) |
+| Migrations            | [Alembic](https://alembic.sqlalchemy.org/)                           |
+| Validation / settings | [Pydantic v2](https://docs.pydantic.dev/) + `pydantic-settings`      |
+| Passwords             | [pwdlib](https://github.com/frankie567/pwdlib) (Argon2)              |
+| Tokens                | [PyJWT](https://pyjwt.readthedocs.io/)                               |
+| Package manager       | [uv](https://docs.astral.sh/uv/)                                     |
 
 ## Project structure
 
@@ -92,18 +93,18 @@ The API is now available at <http://127.0.0.1:8000>, with interactive docs at
 
 ## Environment variables
 
-| Variable | Description | Default |
-| --- | --- | --- |
-| `SNOWFLAKE_ACCOUNT` | Snowflake account identifier (e.g. `xy12345.us-east-1`) | — |
-| `SNOWFLAKE_USER` | Snowflake user | — |
-| `SNOWFLAKE_PASSWORD` | Snowflake password | — |
-| `SNOWFLAKE_DATABASE` | Snowflake database | — |
-| `SNOWFLAKE_SCHEMA` | Snowflake schema | `PUBLIC` |
-| `SNOWFLAKE_WAREHOUSE` | Snowflake warehouse | — |
-| `SNOWFLAKE_ROLE` | Snowflake role | *(empty)* |
-| `SECRET_KEY` | JWT signing key (use a long random string, ≥32 bytes) | — |
-| `ACCESS_TOKEN_TTL_SECONDS` | Access token lifetime | `900` (15 min) |
-| `REFRESH_TOKEN_TTL_SECONDS` | Refresh token lifetime | `604800` (7 days) |
+| Variable                    | Description                                             | Default           |
+|-----------------------------|---------------------------------------------------------|-------------------|
+| `SNOWFLAKE_ACCOUNT`         | Snowflake account identifier (e.g. `xy12345.us-east-1`) | —                 |
+| `SNOWFLAKE_USER`            | Snowflake user                                          | —                 |
+| `SNOWFLAKE_PASSWORD`        | Snowflake password                                      | —                 |
+| `SNOWFLAKE_DATABASE`        | Snowflake database                                      | —                 |
+| `SNOWFLAKE_SCHEMA`          | Snowflake schema                                        | `PUBLIC`          |
+| `SNOWFLAKE_WAREHOUSE`       | Snowflake warehouse                                     | —                 |
+| `SNOWFLAKE_ROLE`            | Snowflake role                                          | *(empty)*         |
+| `SECRET_KEY`                | JWT signing key (use a long random string, ≥32 bytes)   | —                 |
+| `ACCESS_TOKEN_TTL_SECONDS`  | Access token lifetime                                   | `900` (15 min)    |
+| `REFRESH_TOKEN_TTL_SECONDS` | Refresh token lifetime                                  | `604800` (7 days) |
 
 ## API
 
@@ -111,29 +112,29 @@ All `/todos` endpoints (and `GET /auth/me`) require an `Authorization: Bearer <a
 
 ### Health
 
-| Method | Path | Description |
-| --- | --- | --- |
-| `GET` | `/health` | Health check — verifies the DB connection |
+| Method | Path      | Description                               |
+|--------|-----------|-------------------------------------------|
+| `GET`  | `/health` | Health check — verifies the DB connection |
 
 ### Auth — `/auth`
 
-| Method | Path | Description |
-| --- | --- | --- |
-| `POST` | `/auth/register` | Register a new user |
-| `POST` | `/auth/login` | Log in (OAuth2 password form) → token pair |
-| `POST` | `/auth/refresh` | Rotate a refresh token → new token pair |
-| `POST` | `/auth/logout` | Revoke a refresh token |
-| `GET` | `/auth/me` | Get the current user |
+| Method | Path             | Description                                |
+|--------|------------------|--------------------------------------------|
+| `POST` | `/auth/register` | Register a new user                        |
+| `POST` | `/auth/login`    | Log in (OAuth2 password form) → token pair |
+| `POST` | `/auth/refresh`  | Rotate a refresh token → new token pair    |
+| `POST` | `/auth/logout`   | Revoke a refresh token                     |
+| `GET`  | `/auth/me`       | Get the current user                       |
 
 ### Todos — `/todos`
 
-| Method | Path | Description |
-| --- | --- | --- |
-| `GET` | `/todos` | List the current user's todos |
-| `POST` | `/todos` | Create a todo |
-| `GET` | `/todos/{id}` | Get one todo |
-| `PATCH` | `/todos/{id}` | Update a todo (title and/or completed) |
-| `DELETE` | `/todos/{id}` | Delete a todo |
+| Method   | Path          | Description                            |
+|----------|---------------|----------------------------------------|
+| `GET`    | `/todos`      | List the current user's todos          |
+| `POST`   | `/todos`      | Create a todo                          |
+| `GET`    | `/todos/{id}` | Get one todo                           |
+| `PATCH`  | `/todos/{id}` | Update a todo (title and/or completed) |
+| `DELETE` | `/todos/{id}` | Delete a todo                          |
 
 ### Example flow
 
