@@ -56,6 +56,27 @@ body {
   margin-bottom: 2rem;
 }
 
+.github-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  display: inline-flex;
+  line-height: 0;
+  transition: transform 160ms ease;
+}
+
+.github-link:hover {
+  transform: translateY(-1px);
+}
+
+.github-icon {
+  width: 48px;
+  height: 48px;
+  display: block;
+  border-radius: 10px;
+}
+
 .brand {
   font-family: var(--font-display);
   font-size: 1.35rem;

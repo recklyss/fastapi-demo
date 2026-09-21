@@ -1,28 +1,31 @@
 # Todo API
 
-Deployed via Render: https://todo-demo-qnea.onrender.com/app
+[![Python](https://img.shields.io/badge/python-3.13+-blue)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/fastapi-latest-009688)](https://fastapi.tiangolo.com/)
+[![Snowflake](https://img.shields.io/badge/snowflake-supported-29B5E8)](https://www.snowflake.com/)
+[![GitHub](https://img.shields.io/badge/source-recklyss%2Ffastapi--demo-181717?logo=github)](https://github.com/recklyss/fastapi-demo)
 
-![Python](https://img.shields.io/badge/python-3.13+-blue)
-![FastAPI](https://img.shields.io/badge/fastapi-latest-009688)
-![Snowflake](https://img.shields.io/badge/snowflake-supported-29B5E8)
+A demo project for learning Python and building a production-shaped stack with **FastAPI + SQLAlchemy + Snowflake**, plus a small **Jinja2 web UI**.
 
-A demo project for learning Python and building a production-shaped API with **FastAPI + SQLAlchemy + Snowflake**. It implements a small todo list backend
-with JWT authentication, refresh-token rotation, and per-user data isolation.
+- **Live demo:** [https://todo-demo-qnea.onrender.com/login](https://todo-demo-qnea.onrender.com/login)
+- **Source:** [github.com/recklyss/fastapi-demo](https://github.com/recklyss/fastapi-demo)
 
 ## Features
 
 - **JWT auth** — access + refresh tokens signed with HS256, Argon2 password hashing
 - **Refresh-token rotation** — refresh tokens are stored (hashed), rotated on use, and revoked on logout
 - **Per-user todos** — users can only read and modify their own todos
+- **Jinja frontend** — login / register / todos pages that call the JSON API with a Bearer token in `localStorage`
 - **Snowflake backend** — SQLAlchemy models and Alembic migrations targeting Snowflake
 - **Config via environment** — `pydantic-settings` with a `.env` file
-- **Full test suite** — `pytest` + FastAPI `TestClient`, with Snowflake tests auto-skipping when no credentials are set
+- **Test suite** — `pytest` + FastAPI `TestClient`; Snowflake tests skip unless credentials are set
 
 ## Tech stack
 
 | Layer                 | Tool                                                                 |
 |-----------------------|----------------------------------------------------------------------|
 | Web framework         | [FastAPI](https://fastapi.tiangolo.com/)                             |
+| Templates             | [Jinja2](https://jinja.palletsprojects.com/)                         |
 | ORM                   | [SQLAlchemy 2.0](https://www.sqlalchemy.org/)                        |
 | Database              | [Snowflake](https://www.snowflake.com/) (via `snowflake-sqlalchemy`) |
 | Migrations            | [Alembic](https://alembic.sqlalchemy.org/)                           |
@@ -36,15 +39,19 @@ with JWT authentication, refresh-token rotation, and per-user data isolation.
 ```
 .
 ├── app/
-│   ├── main.py          # FastAPI app factory, lifespan, /health
+│   ├── main.py          # FastAPI app factory, lifespan, /health, /static
 │   ├── config.py        # settings (pydantic-settings) + Snowflake URL
 │   ├── db.py            # engine/session factory + get_db dependency
 │   ├── models.py        # SQLAlchemy models: User, Todo, RefreshToken
 │   ├── schemas.py       # Pydantic request/response schemas
 │   ├── auth.py          # password hashing, JWT, auth dependencies
 │   └── routers/
+│       ├── pages.py     # HTML pages: /, /login, /register, /app
 │       ├── auth.py      # /auth/* endpoints
+│       ├── user.py      # /user/me, /user/reset-password
 │       └── todos.py     # /todos/* endpoints
+├── templates/           # Jinja2 HTML
+├── static/              # CSS + client JS
 ├── alembic/             # database migrations
 ├── tests/               # pytest suite
 ├── docs/                # project docs
@@ -73,7 +80,7 @@ uv sync
 cp .env.example .env
 ```
 
-Then edit `.env` and fill in your Snowflake credentials and a `SECRET_KEY`.
+Edit `.env` with your Snowflake credentials and a `SECRET_KEY`.
 See [Environment variables](#environment-variables) below.
 
 ### 3. Run migrations
@@ -85,11 +92,32 @@ uv run alembic upgrade head
 ### 4. Start the server
 
 ```bash
-uv run uvicorn app.main:app --reload
+uv run uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-The API is now available at <http://127.0.0.1:8000>, with interactive docs at
-<http://127.0.0.1:8000/docs> (Swagger UI) and <http://127.0.0.1:8000/redoc>.
+Then open:
+
+| Surface | URL |
+|---------|-----|
+| Web UI (login) | http://127.0.0.1:8000/login |
+| Todos app | http://127.0.0.1:8000/app |
+| Swagger | http://127.0.0.1:8000/docs |
+| ReDoc | http://127.0.0.1:8000/redoc |
+
+> Prefer `127.0.0.1` over `localhost` on macOS if clients resolve `localhost` to IPv6 (`::1`) while uvicorn listens on IPv4 only.
+
+## Deploy on Render
+
+Create a **Web Service** from this repo ([recklyss/fastapi-demo](https://github.com/recklyss/fastapi-demo)).
+
+| Setting | Value |
+|---------|-------|
+| Runtime | Python **3.13** |
+| Build command | `curl -LsSf https://astral.sh/uv/install.sh \| sh && uv sync --frozen --no-dev` |
+| Start command | `uv run uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+| Pre-deploy (optional) | `uv run alembic upgrade head` |
+
+Set the same environment variables as `.env` in the Render dashboard (`SNOWFLAKE_*`, `SECRET_KEY`, token TTLs). Do not commit `.env`.
 
 ## Environment variables
 
@@ -106,35 +134,52 @@ The API is now available at <http://127.0.0.1:8000>, with interactive docs at
 | `ACCESS_TOKEN_TTL_SECONDS`  | Access token lifetime                                   | `900` (15 min)    |
 | `REFRESH_TOKEN_TTL_SECONDS` | Refresh token lifetime                                  | `604800` (7 days) |
 
+## Pages (HTML)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/` | Redirects to `/login` |
+| `GET` | `/login` | Sign-in page |
+| `GET` | `/register` | Registration page |
+| `GET` | `/app` | Todo UI (requires access token in the browser) |
+
+The UI stores JWT tokens in `localStorage` and calls the JSON API below.
+
 ## API
 
-All `/todos` endpoints (and `GET /auth/me`) require an `Authorization: Bearer <access_token>` header.
+Protected routes need `Authorization: Bearer <access_token>`.
 
 ### Health
 
-| Method | Path      | Description                               |
-|--------|-----------|-------------------------------------------|
-| `GET`  | `/health` | Health check — verifies the DB connection |
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/health` | Health check — verifies the DB connection |
 
 ### Auth — `/auth`
 
-| Method | Path             | Description                                |
-|--------|------------------|--------------------------------------------|
-| `POST` | `/auth/register` | Register a new user                        |
-| `POST` | `/auth/login`    | Log in (OAuth2 password form) → token pair |
-| `POST` | `/auth/refresh`  | Rotate a refresh token → new token pair    |
-| `POST` | `/auth/logout`   | Revoke a refresh token                     |
-| `GET`  | `/auth/me`       | Get the current user                       |
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/auth/register` | Register a new user |
+| `POST` | `/auth/login` | Log in (OAuth2 password form) → token pair |
+| `POST` | `/auth/refresh` | Rotate a refresh token → new token pair |
+| `POST` | `/auth/logout` | Revoke a refresh token |
+
+### User — `/user`
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/user/me` | Current authenticated user |
+| `PATCH` | `/user/reset-password` | Reset password (`new_password` + `confirm_password`) |
 
 ### Todos — `/todos`
 
-| Method   | Path          | Description                            |
-|----------|---------------|----------------------------------------|
-| `GET`    | `/todos`      | List the current user's todos          |
-| `POST`   | `/todos`      | Create a todo                          |
-| `GET`    | `/todos/{id}` | Get one todo                           |
-| `PATCH`  | `/todos/{id}` | Update a todo (title and/or completed) |
-| `DELETE` | `/todos/{id}` | Delete a todo                          |
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/todos` | List the current user's todos |
+| `POST` | `/todos` | Create a todo |
+| `GET` | `/todos/{id}` | Get one todo |
+| `PATCH` | `/todos/{id}` | Update a todo (title and/or completed) |
+| `DELETE` | `/todos/{id}` | Delete a todo |
 
 ### Example flow
 
@@ -160,13 +205,11 @@ curl -X POST http://127.0.0.1:8000/todos \
 
 ## Database
 
-The data model has three tables:
+Three tables:
 
-- **`users`** — id, username (unique), password hash, created_at
-- **`todos`** — id, user_id (FK → users, cascade delete), title, completed, timestamps
+- **`users`** — id, username (unique), password hash, optional phone number, created_at
+- **`todos`** — id, user_id (FK → users), title, completed, timestamps
 - **`refresh_tokens`** — id, user_id (FK → users), jti, token hash, expiry, revocation timestamp
-
-Migrations live in `alembic/`. Useful commands:
 
 ```bash
 uv run alembic revision --autogenerate -m "message"   # create a migration
@@ -179,10 +222,10 @@ uv run alembic downgrade -1                            # roll back one step
 ## Auth design
 
 - Passwords are hashed with **Argon2** (`pwdlib`'s recommended profile).
-- On login, the server issues an **access token** (short-lived) and a **refresh token** (long-lived).
-- Refresh tokens are never stored in the clear: only a **SHA-256 hash** is persisted, keyed by `jti`.
-- Refreshing **rotates** the refresh token (the old one is revoked and a new pair is issued), which limits replay.
-- Logging out revokes the presented refresh token.
+- Login returns an **access token** (short-lived) and a **refresh token** (long-lived).
+- Refresh tokens are stored only as a **SHA-256 hash**, keyed by `jti`.
+- Refresh **rotates** the token (old one revoked, new pair issued).
+- Logout revokes the presented refresh token.
 
 ## Testing
 
@@ -191,10 +234,7 @@ uv run pytest          # run the full suite
 uv run pytest -v       # verbose output
 ```
 
-The tests use FastAPI's `TestClient` and a session-factory-backed app. Tests that need a
-real Snowflake database are **skipped automatically** unless the `SNOWFLAKE_*`
-environment variables are set (see `.env.example`); when they are, the suite runs
-against Snowflake and truncates tables between tests.
+Tests that need Snowflake are **skipped** unless `SNOWFLAKE_*` is set. When credentials are present, the suite runs against that Snowflake schema and **deletes all rows** in mapped tables between tests — use a dedicated test schema, not production.
 
 ## License
 
