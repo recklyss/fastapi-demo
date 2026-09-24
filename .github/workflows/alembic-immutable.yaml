@@ -1,0 +1,26 @@
+name: alembic-immutable
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "alembic/versions/**"
+      - "scripts/check_alembic_immutable.sh"
+      - ".github/workflows/alembic-immutable.yaml"
+
+jobs:
+  check-migrations:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Forbid edits to existing Alembic revisions
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          chmod +x scripts/check_alembic_immutable.sh
+          ./scripts/check_alembic_immutable.sh "${BASE_SHA}" "${HEAD_SHA}"

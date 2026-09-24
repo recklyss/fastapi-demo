@@ -219,6 +219,12 @@ uv run alembic downgrade -1                            # roll back one step
 
 > Note: Snowflake has no built-in Alembic DDL dialect, so `alembic/env.py` registers a minimal one.
 
+**Immutability:** once a revision file is on `main`, do not edit or delete it — add a new revision. CI enforces this on pull requests (`.github/workflows/alembic-immutable.yaml`). Locally:
+
+```bash
+./scripts/check_alembic_immutable.sh origin/main HEAD
+```
+
 ## Auth design
 
 - Passwords are hashed with **Argon2** (`pwdlib`'s recommended profile).
