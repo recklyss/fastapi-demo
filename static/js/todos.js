@@ -19,6 +19,9 @@ const TodoApp = (() => {
   function renderTodos(todos) {
     const list = document.getElementById("todo-list");
     const empty = document.getElementById("todo-empty");
+    if (!list || !empty) {
+      return;
+    }
     list.innerHTML = "";
     empty.hidden = todos.length > 0;
 
@@ -70,6 +73,18 @@ const TodoApp = (() => {
     renderTodos(todos);
   }
 
+  function fillProfileChip(user) {
+    const avatar = document.getElementById("profile-avatar");
+    const name = document.getElementById("profile-name");
+    if (!avatar || !name) {
+      return;
+    }
+    const label = user.full_name || user.username || "Profile";
+    const initial = String(label).trim().charAt(0).toUpperCase() || "?";
+    avatar.textContent = initial;
+    name.textContent = label;
+  }
+
   async function init() {
     if (!requireAuth()) {
       return;
@@ -106,7 +121,12 @@ const TodoApp = (() => {
 
     try {
       const user = await TodoApi.me();
-      document.getElementById("user-label").textContent = user.username;
+      fillProfileChip(user);
+    } catch (error) {
+      console.error("Could not load profile chip", error);
+    }
+
+    try {
       await loadTodos();
     } catch (error) {
       showError(error.message || "Could not load todos");

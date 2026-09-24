@@ -2,7 +2,13 @@
 
 {% block header_actions %}
 <div class="top-actions">
-  <span id="user-label" class="muted"></span>
+  <a href="/profile" class="profile-chip" id="profile-chip" aria-label="Open profile">
+    <span class="profile-avatar" id="profile-avatar">?</span>
+    <span class="profile-meta">
+      <span class="profile-name" id="profile-name">Profile</span>
+      <span class="profile-hint">View &amp; edit</span>
+    </span>
+  </a>
   <button type="button" id="logout-btn" class="btn ghost">Log out</button>
 </div>
 {% endblock %}
@@ -31,7 +37,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/js/todos.js"></script>
+<script src="/static/js/todos.js?v=3"></script>
 <script>
   TodoApp.init();
 </script>

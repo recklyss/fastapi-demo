@@ -100,6 +100,14 @@ const TodoApi = (() => {
     return request("/user/me", { auth: true });
   }
 
+  function updateProfile(patch) {
+    return request("/user/profile", {
+      method: "PATCH",
+      auth: true,
+      json: patch,
+    });
+  }
+
   function listTodos() {
     return request("/todos", { auth: true });
   }
@@ -135,6 +143,7 @@ const TodoApi = (() => {
     register,
     login,
     me,
+    updateProfile,
     listTodos,
     createTodo,
     updateTodo,

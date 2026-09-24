@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block header_actions %}
+<div class="top-actions">
+  <a href="/app" class="btn ghost">Back to todos</a>
+  <button type="button" id="logout-btn" class="btn ghost">Log out</button>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="app-panel">
+  <h1 class="display">Profile</h1>
+  <p class="lede">Update how you appear on TodoDesk.</p>
+
+  <dl class="profile-readonly">
+    <div>
+      <dt>Username</dt>
+      <dd id="profile-username">—</dd>
+    </div>
+  </dl>
+
+  <form id="profile-form" class="stack" novalidate>
+    <label>
+      Full name
+      <input id="full-name" name="full_name" maxlength="255" autocomplete="name" />
+    </label>
+    <label>
+      Age
+      <input id="age" name="age" type="number" min="0" step="1" inputmode="numeric" />
+    </label>
+    <p id="profile-error" class="error" hidden></p>
+    <p id="profile-success" class="success" hidden>Profile saved.</p>
+    <button type="submit" class="btn primary">Save changes</button>
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/profile.js?v=3"></script>
+<script>
+  TodoProfile.init();
+</script>
+{% endblock %}

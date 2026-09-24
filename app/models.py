@@ -3,6 +3,7 @@ from datetime import datetime
 
 from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Text
 from sqlalchemy import func
@@ -29,6 +30,8 @@ class User(Base):
         DateTime(timezone=True), server_default=func.now()
     )
     phone_number: Mapped[str] = mapped_column(String(20), unique=True, default=None)
+    full_name: Mapped[str] = mapped_column(String(255), default=None)
+    age: Mapped[int] = mapped_column(Integer, default=None, nullable=True)
 
 
 class Todo(Base):

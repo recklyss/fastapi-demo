@@ -42,3 +42,12 @@ def app_page(request: Request):
         name="app.html",
         context={"title": "Todos"},
     )
+
+
+@router.get("/profile")
+def profile_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="profile.html",
+        context={"title": "Profile"},
+    )

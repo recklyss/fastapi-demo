@@ -14,12 +14,38 @@ class UserCreate(BaseModel):
     password: str = Field(min_length=1)
 
 
+class UserUpdate(BaseModel):
+    full_name: str | None = None
+    age: int | None = None
+
+    @field_validator("full_name")
+    @classmethod
+    def strip_full_name(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        name = value.strip()
+        if not name:
+            raise ValueError("Full name cannot be blank")
+        return name
+
+    @field_validator("age")
+    @classmethod
+    def validate_age(cls, value: int | None) -> int | None:
+        if value is None:
+            return None
+        if value < 0:
+            raise ValueError("Age cannot be negative")
+        return value
+
+
 class UserPublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
     username: str
     phone_number: str | None
+    full_name: str | None
+    age: int | None
     created_at: datetime
 
 
