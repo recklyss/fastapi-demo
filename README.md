@@ -1,5 +1,7 @@
 # Todo API
 
+[Learning path here](https://recklyss.github.io/fastapi-demo/learn-fastapi.html)
+
 [![Python](https://img.shields.io/badge/python-3.13+-blue)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/fastapi-latest-009688)](https://fastapi.tiangolo.com/)
 [![Snowflake](https://img.shields.io/badge/snowflake-supported-29B5E8)](https://www.snowflake.com/)
